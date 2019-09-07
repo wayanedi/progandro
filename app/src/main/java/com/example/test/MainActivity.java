@@ -18,46 +18,45 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button btn = (Button)findViewById(R.id.login);
+
+
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(cekEmail()){
+                    Toast.makeText(getApplicationContext(),"valid email address",Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(MainActivity.this, user.class);
+                    startActivity(i);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),"Invalid email address",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+    }
+
+    public boolean cekEmail(){
+
         EditText txt = (EditText) findViewById(R.id.email);
+
 
         final String emailx = txt.getText().toString().trim();
 
         final String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
-        txt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        if (emailx.matches(emailPattern))
+        {
 
-            }
+            return  true;
+        }
+        else
+        {
+            return  false;
+            //or
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
 
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-                if (emailx.matches(emailPattern) && editable.length() > 0)
-                {
-                    Toast.makeText(getApplicationContext(),"valid email address",Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    Toast.makeText(getApplicationContext(),"Invalid email address",Toast.LENGTH_SHORT).show();
-                    //or
-
-                }
-
-            }
-        });
-
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, user.class);
-                startActivity(i);
-            }
-        });
     }
 }
