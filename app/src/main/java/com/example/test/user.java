@@ -13,7 +13,7 @@ public class user extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
-
+        prepare();
         Button btn = (Button) findViewById(R.id.btn_about);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -22,5 +22,10 @@ public class user extends AppCompatActivity {
                 startActivity(it);
             }
         });
+    }
+
+
+    private void prepare(){
+        this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_test, new TestFragment()).commit();
     }
 }
