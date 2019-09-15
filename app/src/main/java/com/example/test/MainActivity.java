@@ -18,16 +18,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button btn = (Button)findViewById(R.id.login);
-
+        final EditText password = (EditText)findViewById(R.id.password);
 
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(cekEmail()){
-                    Toast.makeText(getApplicationContext(),"valid email address",Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(MainActivity.this, user.class);
-                    startActivity(i);
+                    if(!password.getText().toString().equals("")){
+                        Toast.makeText(getApplicationContext(),"valid email address and password",Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(MainActivity.this, user.class);
+                        startActivity(i);
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(),"Invalid password",Toast.LENGTH_SHORT).show();
+                    }
+
                 }
                 else{
                     Toast.makeText(getApplicationContext(),"Invalid email address",Toast.LENGTH_SHORT).show();
@@ -48,14 +54,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (emailx.matches(emailPattern))
         {
-
             return  true;
         }
         else
         {
             return  false;
-            //or
-
         }
 
     }
