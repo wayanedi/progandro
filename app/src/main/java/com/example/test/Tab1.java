@@ -1,5 +1,9 @@
 package com.example.test;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -34,6 +38,10 @@ public class Tab1 extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_tab1, container, false);
     }
+
+
+
+
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name

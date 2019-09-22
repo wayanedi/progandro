@@ -24,10 +24,17 @@ public class MainActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(cekEmail()){
+                EditText txt = (EditText) findViewById(R.id.email);
+                final String emailx = txt.getText().toString().trim();
+
+                if(cekEmail(emailx)){
                     if(!password.getText().toString().equals("")){
                         Toast.makeText(getApplicationContext(),"valid email address and password",Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(MainActivity.this, user.class);
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString("email", emailx);
+                        i.putExtras(bundle);
                         startActivity(i);
                     }
                     else{
@@ -43,12 +50,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public boolean cekEmail(){
-
-        EditText txt = (EditText) findViewById(R.id.email);
+    public boolean cekEmail(String emailx){
 
 
-        final String emailx = txt.getText().toString().trim();
 
         final String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
