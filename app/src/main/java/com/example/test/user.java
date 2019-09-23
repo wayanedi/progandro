@@ -8,7 +8,10 @@ import androidx.viewpager.widget.ViewPager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -17,16 +20,25 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import android.util.Log;
 
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class user extends AppCompatActivity implements Tab1.OnFragmentInteractionListener, Tab2.OnFragmentInteractionListener{
 
     private  boolean isReceiveRegistered = false;
+    private static final String TAG = "MainActivity";
+    public static final long INTERVAL=3000;//variable to execute services every 10 second
+    private Handler mHandler=new Handler(); // run on another Thread to avoid crash
+    private Timer mTimer=null; // timer handling
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +73,53 @@ public class user extends AppCompatActivity implements Tab1.OnFragmentInteractio
 //        });
     }
 
+
+
+    public void scheduleJob(View v) {
+        ComponentName componentName = new ComponentName(this, MyJobService.class);
+        JobInfo info = new JobInfo.Builder(123, componentName)
+                .setRequiresCharging(true)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                .setPersisted(true)
+                .setPeriodic(15 * 60 * 1000)
+                .build();
+
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        int resultCode = scheduler.schedule(info);
+        if (resultCode == JobScheduler.RESULT_SUCCESS) {
+            Log.d(TAG, "Job scheduled");
+        } else {
+            Log.d(TAG, "Job scheduling failed");
+        }
+
+        if(mTimer!=null)
+            mTimer.cancel();
+        else
+            mTimer=new Timer(); // recreate new timer
+        mTimer.scheduleAtFixedRate(new TimeDisplayTimerTask(),0,INTERVAL);
+    }
+
+    public void cancelJob(View v) {
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        scheduler.cancel(123);
+        Log.d(TAG, "Job cancelled");
+        mTimer.cancel();
+    }
+
+
+    private class TimeDisplayTimerTask extends TimerTask {
+        @Override
+        public void run() {
+            // run on another thread
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    // display toast at every 10 second
+                    Toast.makeText(getApplicationContext(), "tiap 3 detik", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

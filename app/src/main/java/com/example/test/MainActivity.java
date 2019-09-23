@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
         Button btn = (Button)findViewById(R.id.login);
         final EditText password = (EditText)findViewById(R.id.password);
 
-
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     public boolean cekEmail(String emailx){
 
