@@ -16,6 +16,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import android.widget.Button;
 import android.content.Intent;
 import android.widget.Toast;
@@ -25,6 +31,8 @@ import android.util.Log;
 public class Tab1 extends Fragment {
 
     private static final String TAG = "MainActivity";
+
+
 
     public Tab1(){
 
@@ -44,6 +52,8 @@ public class Tab1 extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_tab1, container, false);
+
+
         //requireActivity()
 
 //        Button button = (Button)view.findViewById(R.id.startjob);
@@ -54,8 +64,12 @@ public class Tab1 extends Fragment {
 //            }
 //        });
 
+
+
         return view;
     }
+
+
 
 
 //    public void scheduleJob(View v) {

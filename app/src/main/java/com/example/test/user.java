@@ -62,6 +62,17 @@ public class user extends AppCompatActivity implements Tab1.OnFragmentInteractio
         //Toast.makeText(getApplicationContext(), Integer.toString(tablayout.getTabCount()), Toast.LENGTH_SHORT).show();
         viewpager.setAdapter(adapter);
 
+        Button btn = (Button)findViewById(R.id.recycle);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "kontol ", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(user.this, RecyclerView.class);
+                startActivity(i);
+            }
+        });
+
         //prepare();
         //Button btn = (Button) findViewById(R.id.btn_about);
 //        btn.setOnClickListener(new View.OnClickListener() {

@@ -2,23 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.test">
 
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE">
-
-    </uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE">
-
-    </uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE">
-
-    </uses-permission>
-
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED">
-
-    </uses-permission>
-
-
-
-
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
 
     <application
         android:allowBackup="true"
@@ -27,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".About"></activity>
+        <activity android:name=".RecyclerView"></activity>
+        <activity android:name=".About" />
         <activity android:name=".user" />
         <activity android:name=".MainActivity">
             <intent-filter>
