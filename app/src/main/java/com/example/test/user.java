@@ -1,8 +1,11 @@
 package com.example.test;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.NotificationChannel;
@@ -23,11 +26,23 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -40,6 +55,19 @@ public class user extends AppCompatActivity implements Tab1.OnFragmentInteractio
     private Handler mHandler=new Handler(); // run on another Thread to avoid crash
     private Timer mTimer=null; // timer handling
 
+    private FirebaseFirestore firebaseFirestoreDb;
+    private EditText namaMatakuliah;
+    private EditText namaDosen;
+    private EditText sks;
+    private Button btn;
+
+
+    private RecyclerView rvView;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+
+    private ArrayList<Matakuliah> dataSet;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,14 +75,17 @@ public class user extends AppCompatActivity implements Tab1.OnFragmentInteractio
 
         Intent intent = getIntent();
 
-        Bundle b = getIntent().getExtras();
+//        Bundle b = getIntent().getExtras();
+//
+//        String str2 = b.getString("email", "");
+//        Toast.makeText(getApplicationContext(), "selamat datang " + str2, Toast.LENGTH_SHORT).show();
 
-        String str2 = b.getString("email", "");
-        Toast.makeText(getApplicationContext(), "selamat datang " + str2, Toast.LENGTH_SHORT).show();
+
 
         TabLayout tablayout = findViewById(R.id.tablayout);
         tablayout.addTab(tablayout.newTab().setText("Tab 1"));
-        tablayout.addTab(tablayout.newTab().setText("Tab 2"));
+        tablayout.addTab(tablayout.newTab().setText("Firebase"));
+        tablayout.addTab(tablayout.newTab().setText("Tab 3"));
         tablayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewpager = findViewById(R.id.pager);
@@ -62,18 +93,6 @@ public class user extends AppCompatActivity implements Tab1.OnFragmentInteractio
         //Toast.makeText(getApplicationContext(), Integer.toString(tablayout.getTabCount()), Toast.LENGTH_SHORT).show();
         viewpager.setAdapter(adapter);
 
-        Button btn = (Button)findViewById(R.id.recycle);
-
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "kontol ", Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(user.this, RecyclerView.class);
-                startActivity(i);
-            }
-        });
-
-        //prepare();
         //Button btn = (Button) findViewById(R.id.btn_about);
 //        btn.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -82,8 +101,16 @@ public class user extends AppCompatActivity implements Tab1.OnFragmentInteractio
 //                startActivity(it);
 //            }
 //        });
-    }
 
+//        btn = findViewById(R.id.simpanButton);
+//
+//        btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                tambahMahasiswa(view);
+//            }
+//        });
+    }
 
 
     public void scheduleJob(View v) {
@@ -174,6 +201,89 @@ public class user extends AppCompatActivity implements Tab1.OnFragmentInteractio
 
     }
 
+    private void getDataMahasiswa(){
+
+        dataSet = new ArrayList<Matakuliah>();
+        firebaseFirestoreDb.collection("Matakuliah").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Log.d(TAG, document.getId() + " => " + document.getData());
+                        Matakuliah matkul = document.toObject(Matakuliah.class);
+                        dataSet.add(matkul);
+                    }
+                    setToRecycleview();
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+
+            }
+        });
+
+    }
+
+    public void tambahMahasiswa(View view) {
+
+        firebaseFirestoreDb = FirebaseFirestore.getInstance();
+
+        namaMatakuliah = findViewById(R.id.namaMataKuliah);
+        namaDosen = findViewById(R.id.namaDosen);
+        sks = findViewById(R.id.sks);
+
+
+        Matakuliah mhs = new Matakuliah(namaMatakuliah.getText().toString(),
+                namaDosen.getText().toString(),
+                Integer.parseInt(sks.getText().toString()));
+
+        System.out.println("dosen : " + mhs.getNamaDosen());
+        System.out.println("matkul : " +mhs.getNamaMatkul());
+        System.out.println("sks : " +mhs.getSks());
+
+
+        firebaseFirestoreDb = FirebaseFirestore.getInstance();
+
+
+        firebaseFirestoreDb.collection("Matakuliah").document().set(mhs)
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(getApplicationContext(), "Mahasiswa berhasil didaftarkan",
+                            Toast.LENGTH_SHORT).show();
+                }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getApplicationContext(), "ERROR" + e.toString(),
+                            Toast.LENGTH_SHORT).show();
+                    Log.d("TAG", e.toString());
+                }
+            });
+        getDataMahasiswa();
+
+    }
+
+    private void setToRecycleview(){
+
+        System.out.println("isi data set: " + dataSet.size());
+
+
+        rvView = findViewById(R.id.recycle_view_mahasiswa);
+        rvView.setHasFixedSize(true);
+
+//        dataSet.add(new Matakuliah("alpro", "yuan", 3));
+//        dataSet.add(new Matakuliah("manpro", "eki", 3));
+//        dataSet.add(new Matakuliah("progeb", "dany", 3));
+
+        layoutManager = new LinearLayoutManager(this);
+        rvView.setLayoutManager(layoutManager);
+
+        adapter = new RecyclerViewMatakuliahAdapter(dataSet);
+        rvView.setAdapter(adapter);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -200,7 +310,5 @@ public class user extends AppCompatActivity implements Tab1.OnFragmentInteractio
     }
 
 
-//    private void prepare(){
-//        this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_test, new TestFragment()).commit();
-//    }
+
 }

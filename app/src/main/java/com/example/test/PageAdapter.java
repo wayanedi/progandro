@@ -32,6 +32,11 @@ public class PageAdapter extends FragmentPagerAdapter {
                 return tab2;
             }
 
+            case 2:{
+                Tab3 tab3 = new Tab3();
+                return tab3;
+            }
+
             default:
             {
                 return null;
@@ -46,8 +51,14 @@ public class PageAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        String title = "Tab " + (position+1);
-        return title.subSequence(title.lastIndexOf(".") + 1, title.length());
+
+        if(position==1){
+            String title = "FIREBASE ";
+            return title.subSequence(title.lastIndexOf(".") + 1, title.length());
+        }else {
+            String title = "tab " + (position + 1);
+            return title.subSequence(title.lastIndexOf(".") + 1, title.length());
+        }
     }
 
 }
